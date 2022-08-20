@@ -27,7 +27,7 @@ stages:
         azureSubscription: AIRS
         scriptType: bash
         inlineScript: |
-          changes=$(curl https://dev.azure.com/chhouse/CustomerWork/_apis/git/repositories/$(Build.Repository.ID)/commits/$(Build.SourceVersion)/changes?api-version=5.0 -H "Accept: application/json" -H "Authentication: Bearer $(System.AccessToken)")
+          changes=$(curl https://dev.azure.com/chhouse/Customer%20Work/_apis/git/repositories/$(Build.Repository.ID)/commits/$(Build.SourceVersion)/changes?api-version=5.0 -H "Accept: application/json" -H "Authentication: Bearer $(System.AccessToken)")
           echo $changes
           
 

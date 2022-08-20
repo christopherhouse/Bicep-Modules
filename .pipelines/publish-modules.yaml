@@ -38,8 +38,8 @@ jobs:
           If (-not ($publishedModules ?? @()).Contains(("$(modulePrefix)" + $filename))) {
             Write-Host "Adding new module $filename with version $version"
             az bicep publish --file $_ --target br:$(registryName).azurecr.io/bicep/${filename}:${version}
-            Write-Host "Marking module $fileName`:$version read-only"
-            $onlyFileName = Split-Path $filename -Leaf
+            $onlyFileName = $fileName.replace("modules/", "")
+            Write-Host "Marking module $onlyFileName`:$version read-only"
             az acr repository update --name $(registryName) --image ${$onlyFileName}:${version} --write-enabled false
           }
         }

@@ -5,6 +5,8 @@ trigger:
   paths:
     include:
     - '*.bicep'
+    exclude:
+    - '**/main.bicep' # only include modules
  
 pr: none
  
@@ -30,7 +32,7 @@ jobs:
         az bicep install
         $version = Get-Date -f 'yyyy-MM-dd'
         $publishedModules = $(az acr repository list --name $(registryName) --query "[?contains(@, '$(modulePrefix)')]" -o tsv)
-        Get-ChildItem -Recurse -Path ./*.bicep | Foreach-Object {
+        Get-ChildItem -Recurse -Path ./modules/*.bicep | Foreach-Object {
           $filename = ($_ | Resolve-Path -Relative) -replace "^./" -replace '\..*'
           # Check if module already exists in the registry
           If (-not ($publishedModules ?? @()).Contains(("$(modulePrefix)" + $filename))) {

@@ -28,8 +28,10 @@ stages:
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-          changes=$(curl https://dev.azure.com/chhouse/Customer%20Work/_apis/git/repositories/$(Build.Repository.ID)/commits/$(Build.SourceVersion)/changes?api-version=5.0 -H "Accept: application/json" -H "Authentication: Bearer $(System.AccessToken)")
-          echo $changes
+          URL="https://dev.azure.com/chhouse/Customer%20Work/_apis/git/repositories/$(Build.Repository.ID)/commits/$(Build.SourceVersion)/changes?api-version=5.0"
+          echo $URL
+          CHANGES=$(curl $URL -H "Accept: application/json" -H "Authentication: Bearer $(System.AccessToken)")
+          echo $CHANGES
           
 
 # - template: templates/deploy-template.yaml

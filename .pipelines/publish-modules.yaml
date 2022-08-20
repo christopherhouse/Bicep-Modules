@@ -10,7 +10,8 @@ pr: none
  
 variables:
   isPublish: $[eq(variables['Build.SourceBranch'], 'refs/heads/publish')]
-  modulePrefix: 'bicep/'
+  modulePrefix: 'bicep/modules/'
+  registryName: cmhbicep
  
 jobs:
 - job: modules
@@ -22,7 +23,7 @@ jobs:
   - task: AzureCLI@2
     displayName: 'Publish/Update Modules to Registry'
     inputs:
-      azureSubscription: $(azureSubscription)
+      azureSubscription: AIRS
       scriptType: 'pscore'
       scriptLocation: inlineScript
       inlineScript: |

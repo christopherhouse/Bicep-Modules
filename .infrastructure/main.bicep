@@ -1,6 +1,6 @@
 param registryName string
 param location string = resourceGroup().location
-param deploymentSuffix string = '-${utcNow()}'
+param deploymentSuffix string = '-${uniqueString(utcNow())}'
 
 module registry '../modules/containerRegistry.bicep' = {
   name: 'registry-${deploymentSuffix}'
@@ -8,6 +8,5 @@ module registry '../modules/containerRegistry.bicep' = {
     containerRegistryName: registryName
     location: location
     skuName: 'Basic'
-    publicNetworkAccess: 'Enabled'
   }
 }

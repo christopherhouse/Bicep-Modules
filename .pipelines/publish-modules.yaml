@@ -1,0 +1,117 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger:
+ branches:
+   include:
+   - publish # Only run on changes to main
+
+pr:
+ branches:
+   exclude:
+   - '*' # Never run when a PR is created, we'll have a separate quality pipeline for PRs
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    steps:
+    - task: NugetToolInstaller@1
+      displayName: Install Nuget tool
+    
+    - task: NugetCommand@2
+      displayName: Restore Nuget packages
+      inputs:
+        restoreSolution: '$(solution)'
+    
+    - task: VSBuild@1
+      displayName: Build solution
+      inputs:
+        solution: '$(System.DefaultWorkingDirectory)\GovtReportingDemo\GovtReportingDemo.csproj'
+        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)\web"'
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+
+    - task: VSTest@2
+      displayName: Run unit tests
+      inputs:
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+
+    - task: DotNetCoreCLI@2
+      displayName: Build Function project
+      inputs:
+        command: build
+        projects: $(System.DefaultWorkingDirectory)\GovtReportingDemo.Functions\GovtReportingDemo.Functions.csproj
+        arguments: --output $(System.DefaultWorkingDirectory)\function_output\ --configuration $(buildConfiguration)
+
+    - task: ArchiveFiles@2
+      displayName: Zip Function app output
+      inputs:
+        rootFolderOrFile: $(System.DefaultWorkingDirectory)\function_output\
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)\function\GovtReportingDemo.Functions.zip
+        replaceExistingArchive: true
+    
+    - task: DotNetCoreCLI@2
+      displayName: Publish Function project
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: $(System.DefaultWorkingDirectory)\GovtReportingDemo.Functions\GovtReportingDemo.Functions.csproj
+        arguments: --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)\function\
+
+    - task: AzureCLI@2
+      displayName: Build Bicep template
+      inputs:
+       azureSubscription: AIRS
+       scriptType: ps
+       scriptLocation: inlineScript
+       inlineScript: |
+         az bicep install
+         az bicep build -f $(Build.SourcesDirectory)\infrastructure\maintemplate.bicep
+         mkdir $(Build.ArtifactStagingDirectory)\infrastructure\
+         copy $(Build.SourcesDirectory)\infrastructure\maintemplate.* $(Build.ArtifactStagingDirectory)\infrastructure\
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish web app artifact
+      inputs:
+       targetPath: $(Build.ArtifactStagingDirectory)\web\
+       artifact: webApp
+       publishLocation: pipeline
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish infrastructure artifact
+      inputs:
+       targetPath: $(Build.ArtifactStagingDirectory)\infrastructure\
+       artifact: infrastructure
+       publishLocation: pipeline
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish Function artifact
+      inputs:
+        targetPath: $(Build.ArtifactStagingDirectory)\function\
+        artifact: functionApp
+        publishLocation: pipeline
+
+# - template: templates/deploy-template.yaml
+#   parameters:
+#     stageName: Development
+#     environmentName: govt-rpt-dev
+#     variableGroupName: GOVT-REPORTING-DEV
+#     serviceConnection: AIRS
+#     deployToSlot: False
+
+# - template: templates/deploy-template.yaml
+#   parameters:
+#     stageName: Production
+#     environmentName: govt-rpt-prod
+#     variableGroupName: GOVT-REPORTING-PROD
+#     serviceConnection: MSDN
+#     deployToSlot: True

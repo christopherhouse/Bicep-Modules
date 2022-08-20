@@ -30,6 +30,7 @@ jobs:
       scriptLocation: inlineScript
       inlineScript: |
         az bicep install
+        az acr login -n $(registryName)
         $version = Get-Date -f 'yyyy-MM-dd'
         $publishedModules = $(az acr repository list --name $(registryName) --query "[?contains(@, '$(modulePrefix)')]" -o tsv)
         Get-ChildItem -Recurse -Path ./modules/*.bicep | Foreach-Object {

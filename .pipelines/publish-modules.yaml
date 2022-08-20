@@ -1,0 +1,48 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger:
+ branches:
+   include:
+   - publish # Only run on changes to main
+
+pr:
+ branches:
+   exclude:
+   - '*' # Never run when a PR is created, we'll have a separate quality pipeline for PRs
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Run az cli'
+      inputs:
+        azureSubscription: AIRS
+        scriptType: bash
+        inlineScript: |
+          changes=$(curl https://dev.azure.com/chhouse/Customer%20Work/_apis/git/repositories/$(Build.Repository.ID)/commits/$(Build.SourceVersion)/changes?api-version=5.0 -H "Accept: application/json" -H "Authentication: Bearer $(System.AccessToken)")
+          echo $changes
+          
+
+# - template: templates/deploy-template.yaml
+#   parameters:
+#     stageName: Development
+#     environmentName: govt-rpt-dev
+#     variableGroupName: GOVT-REPORTING-DEV
+#     serviceConnection: AIRS
+#     deployToSlot: False
+
+# - template: templates/deploy-template.yaml
+#   parameters:
+#     stageName: Production
+#     environmentName: govt-rpt-prod
+#     variableGroupName: GOVT-REPORTING-PROD
+#     serviceConnection: MSDN
+#     deployToSlot: True

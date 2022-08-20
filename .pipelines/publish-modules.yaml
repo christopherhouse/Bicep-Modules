@@ -40,7 +40,7 @@ jobs:
             az bicep publish --file $_ --target br:$(registryName).azurecr.io/bicep/${filename}:${version}
             $onlyFileName = $fileName.replace("modules/", "")
             Write-Host "Marking module $onlyFileName`:$version read-only"
-            az acr repository update --name $(registryName) --image ${$onlyFileName}:${version} --write-enabled false
+            az acr repository update --name $(registryName) --image bicep/modules/${$onlyFileName}:${version} --write-enabled false
           }
         }
  

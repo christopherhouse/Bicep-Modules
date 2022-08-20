@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-    - publish
+    - main
   paths:
     include:
     - '*.bicep'
@@ -11,14 +11,14 @@ trigger:
 pr: none
  
 variables:
-  isPublish: $[eq(variables['Build.SourceBranch'], 'refs/heads/publish')]
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
   modulePrefix: 'bicep/modules/'
   registryName: cmhbicep
  
 jobs:
 - job: modules
   displayName: 'Publish Bicep Modules'
-  condition: eq(variables.isPublish, 'true')
+  condition: eq(variables.isMain, 'true')
   pool:
     vmImage: ubuntu-latest
   steps:
@@ -39,7 +39,8 @@ jobs:
             Write-Host "Adding new module $filename with version $version"
             az bicep publish --file $_ --target br:$(registryName).azurecr.io/bicep/${filename}:${version}
             Write-Host "Marking module $fileName`:$version read-only"
-            az acr repository update --name $(registryName) --image ${filename}:${version} --write-enabled false
+            $onlyFileName = Split-Path $filename -Leaf
+            az acr repository update --name $(registryName) --image ${$onlyFileName}:${version} --write-enabled false
           }
         }
  

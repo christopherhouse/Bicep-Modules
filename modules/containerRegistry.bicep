@@ -23,4 +23,4 @@ resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = 
 
 output containerRegistryName string = registry.name
 output containerRegistryResourceId string = registry.id
-output containerRegistryManagedIdentityPrincipalId string = registry.identity.principalId
+output containerRegistryManagedIdentityPrincipalId string = systemAssignedManagedIdentityEnabled ? registry.identity.principalId : ''

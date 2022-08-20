@@ -38,7 +38,7 @@ jobs:
           If (-not ($publishedModules ?? @()).Contains(("$(modulePrefix)" + $filename))) {
             Write-Host "Adding new module $filename with version $version"
             az bicep publish --file $_ --target br:$(registryName).azurecr.io/bicep/${filename}:${version}
-            Write-Host "Marking module $fileName:$version read-only"
+            Write-Host "Marking module $fileName`:$version read-only"
             az acr repository update --name $(registryName) --image ${filename}:${version} --write-enabled false
           }
         }
@@ -47,6 +47,6 @@ jobs:
           $moduleName = ($_ | Resolve-Path -Relative) -replace "^./" -replace '\..*'
           Write-Host "Updating module $moduleName with version $version"
           az bicep publish --file $_ --target br:$(registryName).azurecr.io/$(modulePrefix)${moduleName}:${version}
-          Write-Host "Marking module $moduleName:$version read-only"
+          Write-Host "Marking module $moduleName`:$version read-only"
           az acr repository update --name $(registryName) --image ${moduleName}:${version} --write-enabled false
         }

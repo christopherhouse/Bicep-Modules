@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-    - publish
+    - main
   paths:
     include:
     - '*.bicep'
@@ -11,14 +11,14 @@ trigger:
 pr: none
  
 variables:
-  isPublish: $[eq(variables['Build.SourceBranch'], 'refs/heads/publish')]
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
   modulePrefix: 'bicep/modules/'
   registryName: cmhbicep
  
 jobs:
 - job: modules
   displayName: 'Publish Bicep Modules'
-  condition: eq(variables.isPublish, 'true')
+  condition: eq(variables.isMain, 'true')
   pool:
     vmImage: ubuntu-latest
   steps:

@@ -17,5 +17,6 @@ resource storage 'Microsoft.Storage/storageAccounts@2021-01-01' = {
   }
 }
 
-output storageAccountResourceId string = storage.id
+output id string = storage.id
 output name string = storage.name
+output apiVersion string = storage.apiVersion

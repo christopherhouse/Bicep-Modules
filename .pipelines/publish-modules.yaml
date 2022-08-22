@@ -49,7 +49,7 @@ jobs:
           }
         }
  
-        git diff-tree --no-commit-id --name-only --diff-filter=ad -r $(Build.SourceVersion) | Where-Object {$_.EndsWith('.bicep')} | Foreach-Object {
+        git diff-tree --no-commit-id --name-only --diff-filter=ad -r -m $(Build.SourceVersion) | Where-Object {$_.EndsWith('.bicep')} | Foreach-Object {
           $moduleName = ($_ | Resolve-Path -Relative) -replace "^./" -replace '\..*'
           Write-Host "Updating existing module $moduleName with version $version"
           az bicep publish --file $_ --target br:$(registryName).azurecr.io/$(modulePrefix)${moduleName}:${version}

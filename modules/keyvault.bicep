@@ -3,6 +3,7 @@ param location string = resourceGroup().location
 param tenantId string = subscription().tenantId
 param adminUserObjectIds array
 param applicationUserObjectIds array
+param costCenter string = 'UNKNOWN'
 
 var adminAccessPolicies = [for adminUser in adminUserObjectIds: {
   objectId: adminUser
@@ -27,6 +28,9 @@ var accessPolicies = union(adminAccessPolicies, applicationUserPolicies)
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: keyVaultName
   location: location
+  tags: {
+    costCenter: costCenter
+  }
   properties: {
     sku: {
       family: 'A'

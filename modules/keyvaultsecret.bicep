@@ -22,3 +22,7 @@ resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
     value: secretValue
   }
 }
+
+output id string = secret.id
+output name string = secret.name
+output apiVersion string = secret.apiVersion

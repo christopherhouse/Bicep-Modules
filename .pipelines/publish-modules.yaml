@@ -5,6 +5,7 @@ trigger:
   paths:
     include:
     - '*.bicep'
+    - '.pipelines/publish-modules.yaml'
     exclude:
     - '**/main.bicep' # only include modules
  
@@ -31,7 +32,7 @@ jobs:
       inlineScript: |
         az bicep install
         az acr login -n $(registryName)
-        $version = Get-Date -f 'yyyy-MM-dd'
+        $version = (Get-Date -f 'yyyy-MM-dd') + '.$(Build.BuidId'
         $publishedModules = $(az acr repository list --name $(registryName) --query "[?contains(@, '$(modulePrefix)')]" -o tsv)
         Get-ChildItem -Recurse -Path ./modules/*.bicep | Foreach-Object {
           $filename = ($_ | Resolve-Path -Relative) -replace "^./" -replace '\..*'
@@ -50,7 +51,7 @@ jobs:
  
         git diff-tree --no-commit-id --name-only --diff-filter=ad -r $(Build.SourceVersion) | Where-Object {$_.EndsWith('.bicep')} | Foreach-Object {
           $moduleName = ($_ | Resolve-Path -Relative) -replace "^./" -replace '\..*'
-          Write-Host "Updating module $moduleName with version $version"
+          Write-Host "Updating existing module $moduleName with version $version"
           az bicep publish --file $_ --target br:$(registryName).azurecr.io/$(modulePrefix)${moduleName}:${version}
           Write-Host "Marking module $moduleName`:$version read-only"
           az acr repository update --name $(registryName) --image ${moduleName}:${version} --write-enabled false

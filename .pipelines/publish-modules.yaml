@@ -5,6 +5,7 @@ trigger:
   paths:
     include:
     - '*.bicep'
+    - '.pipelines/publish-modules.yaml'
     exclude:
     - '**/main.bicep' # only include modules
  

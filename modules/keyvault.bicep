@@ -27,9 +27,6 @@ var accessPolicies = union(adminAccessPolicies, applicationUserPolicies)
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: keyVaultName
   location: location
-  tags: {
-    CreateScriptFileName: 'keyvault.bcep'
-  }
   properties: {
     sku: {
       family: 'A'

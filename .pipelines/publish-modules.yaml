@@ -32,13 +32,13 @@ jobs:
       inlineScript: |
         az bicep install
         az acr login -n $(registryName)
-        $version = (Get-Date -f 'yyyy-MM-dd') + '.$(Build.BuidId'
+        $version = (Get-Date -f 'yyyy-MM-dd') + '.$(Build.BuidId)'
         $publishedModules = $(az acr repository list --name $(registryName) --query "[?contains(@, '$(modulePrefix)')]" -o tsv)
         Get-ChildItem -Recurse -Path ./modules/*.bicep | Foreach-Object {
           $filename = ($_ | Resolve-Path -Relative) -replace "^./" -replace '\..*'
           Write-Host "Checking existing mod $modulePrefix $fileName"
           # Check if module already exists in the registry
-          If (-not ($publishedModules ?? @()).Contains(("$(modulePrefix)" + $filename))) {
+          If (-not ($publishedModules ?? @()).Contains(("bicep/" + $filename))) {
             Write-Host "Adding new module $filename with version $version"
             az bicep publish --file $_ --target br:$(registryName).azurecr.io/bicep/${filename}:${version}
             $onlyFileName = $fileName.replace("modules/", "")

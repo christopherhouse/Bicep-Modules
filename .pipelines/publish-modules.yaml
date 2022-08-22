@@ -38,7 +38,7 @@ jobs:
           $filename = ($_ | Resolve-Path -Relative) -replace "^./" -replace '\..*'
           Write-Host "Checking existing mod $modulePrefix $fileName"
           # Check if module already exists in the registry
-          If (-not ($publishedModules ?? @()).Contains(("$(modulePrefix)" + $filename))) {
+          If (-not ($publishedModules ?? @()).Contains(("bicep/" + $filename))) {
             Write-Host "Adding new module $filename with version $version"
             az bicep publish --file $_ --target br:$(registryName).azurecr.io/bicep/${filename}:${version}
             $onlyFileName = $fileName.replace("modules/", "")

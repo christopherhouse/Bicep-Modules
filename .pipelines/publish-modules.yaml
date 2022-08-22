@@ -35,6 +35,7 @@ jobs:
         $publishedModules = $(az acr repository list --name $(registryName) --query "[?contains(@, '$(modulePrefix)')]" -o tsv)
         Get-ChildItem -Recurse -Path ./modules/*.bicep | Foreach-Object {
           $filename = ($_ | Resolve-Path -Relative) -replace "^./" -replace '\..*'
+          Write-Host "Checking existing mod $modulePrefix $fileName""
           # Check if module already exists in the registry
           If (-not ($publishedModules ?? @()).Contains(("$(modulePrefix)" + $filename))) {
             Write-Host "Adding new module $filename with version $version"

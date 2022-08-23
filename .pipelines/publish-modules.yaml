@@ -55,5 +55,5 @@ jobs:
           Write-Host "Updating existing module $moduleName with version $version"
           az bicep publish --file $_ --target br:$(registryName).azurecr.io/bicep/${moduleName}:${version}
           Write-Host "Marking module $moduleName`:$version read-only"
-          az acr repository update --name $(registryName) --image ${moduleName}:${version} --write-enabled false
+          az acr repository update --name $(registryName) --image bicep/${moduleName}:${version} --write-enabled false
         }

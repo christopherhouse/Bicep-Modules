@@ -21,6 +21,7 @@ resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = 
   }
 }
 
-output containerRegistryName string = registry.name
-output containerRegistryResourceId string = registry.id
-output containerRegistryManagedIdentityPrincipalId string = systemAssignedManagedIdentityEnabled ? registry.identity.principalId : ''
+output name string = registry.name
+output id string = registry.id
+output managedIdentityPrincipalId string = systemAssignedManagedIdentityEnabled ? registry.identity.principalId : ''
+output apiVersion string = registry.apiVersion

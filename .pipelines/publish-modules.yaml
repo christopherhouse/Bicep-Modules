@@ -53,7 +53,7 @@ jobs:
         git diff-tree --no-commit-id --name-only --diff-filter=ad -r -m $(Build.SourceVersion) | Where-Object {$_.EndsWith('.bicep')} | Foreach-Object {
           $moduleName = ($_ | Resolve-Path -Relative) -replace "^./" -replace '\..*'
           Write-Host "Updating existing module $moduleName with version $version"
-          az bicep publish --file $_ --target br:$(registryName).azurecr.io/$(modulePrefix)${moduleName}:${version}
+          az bicep publish --file $_ --target br:$(registryName).azurecr.io/bicep/${moduleName}:${version}
           Write-Host "Marking module $moduleName`:$version read-only"
           az acr repository update --name $(registryName) --image ${moduleName}:${version} --write-enabled false
         }

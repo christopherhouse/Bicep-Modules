@@ -2,6 +2,8 @@ param cosmosAccountName string
 param cosmosDatabaseName string
 param cosmosContainerName string
 param partitionKeyPaths array
+
+
 param location string = resourceGroup().location
 param deploymentSuffix string = uniqueString(utcNow())
 

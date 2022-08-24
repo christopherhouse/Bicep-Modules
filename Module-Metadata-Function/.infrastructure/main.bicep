@@ -3,6 +3,9 @@ param cosmosDatabaseName string
 param cosmosContainerName string
 param partitionKeyPaths array
 
+param logAnalyticsWorkspaceName string
+
+param appInsightsName string
 
 param location string = resourceGroup().location
 param deploymentSuffix string = uniqueString(utcNow())
@@ -32,5 +35,22 @@ module cosmosContainer '../../bicep/modules/data/cosmos/cosmosserverlesscontaine
     containerName: cosmosContainerName
     databaseName: cosmosDatabase.outputs.name
     partitionKeyPaths: partitionKeyPaths
+  }
+}
+
+module logAnalytics '../../bicep/modules/monitoring/loganalyticsworkspace.bicep' = {
+  name: 'loganalytics-${deploymentSuffix}'
+  params: {
+    workspaceName: logAnalyticsWorkspaceName
+    location: location
+  }
+}
+
+module appInsights '../../bicep/modules/monitoring/appinsights.bicep' = {
+  name: 'appinsights-${deploymentSuffix}'
+  params: {
+    appInsightsName: appInsightsName
+    logAnalyticsWorkspaceName: logAnalytics.outputs.name
+    location: location
   }
 }

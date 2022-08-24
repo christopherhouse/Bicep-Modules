@@ -35,16 +35,16 @@ jobs:
         $version = (Get-Date -f 'yyyy-MM-dd') + ".$env:BUILD_BUILDID"
         Write-Host "Publishing new and updated modules as version $version"
         $publishedModules = $(az acr repository list --name $(registryName) --query "[?contains(@, '$(modulePrefix)')]" -o tsv)
-        Get-ChildItem -Recurse -Path ./modules/*.bicep | Foreach-Object {
+        Get-ChildItem -Recurse -Path ./bicep/modules/*.bicep | Foreach-Object {
           $filename = ($_ | Resolve-Path -Relative) -replace "^./" -replace '\..*'
           Write-Host "Checking existing mod $modulePrefix $fileName"
           # Check if module already exists in the registry
-          If (-not ($publishedModules ?? @()).Contains(("bicep/" + $filename))) {
+          If (-not ($publishedModules ?? @()).Contains(($filename))) {
             Write-Host "Adding new module $filename with version $version"
-            az bicep publish --file $_ --target br:$(registryName).azurecr.io/bicep/${filename}:${version}
-            $onlyFileName = $fileName.replace("modules/", "")
+            az bicep publish --file $_ --target br:$(registryName).azurecr.io/${filename}:${version}
+            $onlyFileName = $fileName.replace("bicep/modules/", "")
             Write-Host "Marking module $onlyFileName`:$version read-only"
-            $image = "bicep/modules/$onlyFileName`:$version"
+            $image = "$filename`:$version"
             Write-Host "Image is $image"
             az acr repository update --name $(registryName) --image $image --write-enabled false
           }
@@ -53,7 +53,7 @@ jobs:
         git diff-tree --no-commit-id --name-only --diff-filter=ad -r -m $(Build.SourceVersion) | Where-Object {$_.EndsWith('.bicep')} | Foreach-Object {
           $moduleName = ($_ | Resolve-Path -Relative) -replace "^./" -replace '\..*'
           Write-Host "Updating existing module $moduleName with version $version"
-          az bicep publish --file $_ --target br:$(registryName).azurecr.io/bicep/${moduleName}:${version}
+          az bicep publish --file $_ --target br:$(registryName).azurecr.io/${moduleName}:${version}
           Write-Host "Marking module $moduleName`:$version read-only"
-          az acr repository update --name $(registryName) --image bicep/${moduleName}:${version} --write-enabled false
+          az acr repository update --name $(registryName) --image ${moduleName}:${version} --write-enabled false
         }

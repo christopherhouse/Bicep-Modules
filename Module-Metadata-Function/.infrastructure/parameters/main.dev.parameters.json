@@ -24,6 +24,12 @@
       },
       "location": {
         "value": "eastus"
+      },
+      "functionStorageAccountName": {
+        "value": "cmhbicepmetadatafunc"
+      },
+      "functionAppName": {
+        "value": "cmh-bicep-metadata-api"
       }
     }
   }

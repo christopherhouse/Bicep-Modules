@@ -8,11 +8,14 @@ param skuSize string = 'Y1'
 @allowed(['Y'])
 param skuFamily string = 'Y'
 param skuCapacity int = 0
+@allowed(['functionapp'])
+param appServicePlanKind string = 'functionapp'
 param location string = resourceGroup().location
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: appServicePlanName
   location: location
+  kind: appServicePlanKind
   sku: {
     name: skuName
     tier: skuTier

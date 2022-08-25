@@ -1,5 +1,5 @@
 param functionAppName string
-param appServicePlanName string = '${functionAppName}-asp'
+param appServicePlanName string
 param storageAccountName string
 param enableSystemAssignedManagedIdentity bool = false
 @secure()

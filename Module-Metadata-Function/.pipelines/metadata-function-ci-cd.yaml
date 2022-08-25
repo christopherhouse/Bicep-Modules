@@ -1,0 +1,36 @@
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - '**/Module-Metadata-Function/*'
+
+pr: none
+
+variables:
+  vmImage: ubtuntu-latest
+  infraPath: $(Build.SourcesDirectory)/Module-Metadata-Function/.infrastructure
+
+jobs:
+- job: BuildInfrastructure
+  displayName: Build infrastructure template
+  pool:
+    vmImage: $(vmImage)
+  steps:
+  - task: AzureCLI@2
+    displayName: Build Bicep template
+    inputs:
+      azureSubscription: AIRS
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        az bicep build -file $(infraPath)/main.bicep
+    
+  - task: PublishPipelineArtifact@1
+    displayName: Publish infrastructure template
+    inputs:
+      targetPath: $(infraPath)
+      artifact: infrastructure
+      artifactType: pipeline
+

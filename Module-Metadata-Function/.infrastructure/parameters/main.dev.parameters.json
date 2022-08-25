@@ -1,0 +1,29 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "cosmosAccountName": {
+        "value": "cmh-bicep-metadata-ca"
+      },
+      "cosmosDatabaseName": {
+        "value": "metadata"
+      },
+      "cosmosContainerName": {
+        "value": "modules"
+      },
+      "partitionKeyPath": {
+        "value": [
+            "/moduleName"
+        ]
+      },
+      "logAnalyticsWorkspaceName": {
+        "value": "cmh-bicep-metadata-la"
+      },
+      "appInsightsName": {
+        "value": "cmh-bicep-metadata-ai"
+      },
+      "location": {
+        "value": "eastus"
+      }
+    }
+  }

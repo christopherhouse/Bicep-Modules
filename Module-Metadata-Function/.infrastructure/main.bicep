@@ -122,3 +122,15 @@ module keyVault '../../bicep/modules/keyvault.bicep' = {
     location: location
   }
 }
+
+module cosmosSecret '../../bicep/modules/keyvaultsecret.bicep' = {
+  name: 'cosmossecret-${deploymentSuffix}'
+  params: {
+    vaultName: keyVaultName
+    secretName: 'COSMOS-CONNECTION-STRING'
+    secretValue: cosmosAccount.outputs.connectionString
+  }
+  dependsOn: [
+    keyVault
+  ]
+}

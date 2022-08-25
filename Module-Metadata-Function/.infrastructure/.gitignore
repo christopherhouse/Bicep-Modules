@@ -1,1 +1,2 @@
 *.json
+!parameters/*.json

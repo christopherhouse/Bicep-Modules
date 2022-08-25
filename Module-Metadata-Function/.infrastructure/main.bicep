@@ -89,3 +89,20 @@ module appServicePlan '../../bicep/modules/apps/serverless/appserviceplan.bicep'
     location: location
   }
 }
+
+resource appInsightsEx 'Microsoft.Insights/components@2020-02-02' existing = {
+  name: appInsights.outputs.name
+}
+
+module functionApp '../../bicep/modules/apps/serverless/functionapp.bicep' = {
+  name: 'functionapp-${deploymentSuffix}'
+  params: {
+    storageAccountName: functionStorage.outputs.name
+    appInsightsConnectionString: appInsightsEx.properties.ConnectionString
+    appInsightsInstrumentationKey: appInsightsEx.properties.InstrumentationKey
+    functionAppName: functionAppName
+    location: location
+    enableSystemAssignedManagedIdentity: true
+    appServicePlanName: appServicePlan.outputs.name
+  }
+}

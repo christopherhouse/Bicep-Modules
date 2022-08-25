@@ -82,10 +82,10 @@ module webjobsSecrets '../../bicep/modules/storagecontainer.bicep' = {
   }
 }
 
-// module appServicePlan '../../bicep/modules/apps/serverless/appserviceplan.bicep' = {
-//   name: 'appserviceplan-${deploymentSuffix}'
-//   params: {
-//     appServicePlanName: functionAppName
-//     location: location
-//   }
-// }
+module appServicePlan '../../bicep/modules/apps/serverless/appserviceplan.bicep' = {
+  name: 'appserviceplan-${deploymentSuffix}'
+  params: {
+    appServicePlanName: functionAppName
+    location: location
+  }
+}

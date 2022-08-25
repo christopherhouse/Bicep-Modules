@@ -7,6 +7,9 @@ param logAnalyticsWorkspaceName string
 
 param appInsightsName string
 
+param functionAppName string
+param functionStorageAccountName string
+
 param location string = resourceGroup().location
 param deploymentSuffix string = uniqueString(utcNow())
 
@@ -51,6 +54,38 @@ module appInsights '../../bicep/modules/monitoring/appinsights.bicep' = {
   params: {
     appInsightsName: appInsightsName
     logAnalyticsWorkspaceName: logAnalytics.outputs.name
+    location: location
+  }
+}
+
+module functionStorage '../../bicep/modules/storageaccount.bicep' = {
+  name: 'funcstorage-${deploymentSuffix}'
+  params: {
+    location: location
+    storageAccountName:  functionStorageAccountName
+  }
+}
+
+module webjobsStorage '../../bicep/modules/storagecontainer.bicep' = {
+  name: 'webjobsstore-${deploymentSuffix}'
+  params: {
+    containerName: 'azure-webjobs-storage'
+    storageAccountName: functionStorage.outputs.name
+  }
+}
+
+module webjobsSecrets '../../bicep/modules/storagecontainer.bicep' = {
+  name: 'webjobsecres-${deploymentSuffix}'
+  params: {
+    containerName: 'azure-webjobs-secrets'
+    storageAccountName: functionStorage.outputs.name
+  }
+}
+
+module appServicePlan '../../bicep/modules/apps/serverless/appserviceplan.bicep' = {
+  name: 'appserviceplan-${deploymentSuffix}'
+  params: {
+    appServicePlanName: functionAppName
     location: location
   }
 }

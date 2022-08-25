@@ -37,6 +37,7 @@ jobs:
 
 - job: DeployInfrastructure
   displayName: Deploy Infrastructure
+  dependsOn: BuildInfrastructure
   pool:
     vmImage: $(vmImage)
   steps:

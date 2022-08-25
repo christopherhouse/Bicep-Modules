@@ -30,6 +30,14 @@
       },
       "functionAppName": {
         "value": "cmh-bicep-metadata-api"
+      },
+      "keyVaultName": {
+        "value": "cmh-bicep-metadata-kv"
+      },
+      "keyVaultAdminPrincipalids": {
+        "value": [
+            "209019b5-167b-45cd-ab9c-f987fa262040"
+        ]
       }
     }
   }

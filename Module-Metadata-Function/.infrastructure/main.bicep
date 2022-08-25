@@ -10,6 +10,9 @@ param appInsightsName string
 param functionAppName string
 param functionStorageAccountName string
 
+param keyVaultName string
+param keyVaultAdminPrincipalids array
+
 param location string = resourceGroup().location
 param deploymentSuffix string = uniqueString(utcNow())
 
@@ -108,4 +111,14 @@ module functionApp '../../bicep/modules/apps/serverless/functionapp.bicep' = {
     webjobsSecrets
     webjobsStorage
   ]
+}
+
+module keyVault '../../bicep/modules/keyvault.bicep' = {
+  name: 'keyvault-${deploymentSuffix}'
+  params: {
+    adminUserObjectIds: keyVaultAdminPrincipalids
+    keyVaultName: keyVaultName
+    applicationUserObjectIds: [ functionApp.outputs.managedIdentityPrincipalId ]
+    location: location
+  }
 }

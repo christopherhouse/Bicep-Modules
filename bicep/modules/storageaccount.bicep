@@ -4,6 +4,7 @@ param location string
 param skuName string = 'Standard_LRS'
 @allowed(['Cool', 'Hot'])
 param storageAccessTier string = 'Hot'
+param allowBlobPublicAccess bool = false
 
 resource storage 'Microsoft.Storage/storageAccounts@2021-01-01' = {
   name: storageAccountName
@@ -14,6 +15,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2021-01-01' = {
   kind: 'StorageV2'
   properties: {
     accessTier: storageAccessTier
+    allowBlobPublicAccess: allowBlobPublicAccess
   }
 }
 

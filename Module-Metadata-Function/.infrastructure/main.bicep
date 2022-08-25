@@ -101,12 +101,11 @@ module functionApp '../../bicep/modules/apps/serverless/functionapp.bicep' = {
     functionAppName: functionAppName
     location: location
     enableSystemAssignedManagedIdentity: true
-    appServicePlanName: appServicePlanName
+    appServicePlanId: appServicePlan.outputs.id
   }
   dependsOn: [
     appInsights
     webjobsSecrets
     webjobsStorage
-    appServicePlan
   ]
 }

@@ -9,7 +9,7 @@ trigger:
 pr: none
 
 variables:
-  vmImage: ubtuntu-latest
+  vmImage: ubuntu-latest
   infraPath: $(Build.SourcesDirectory)/Module-Metadata-Function/.infrastructure
 
 jobs:

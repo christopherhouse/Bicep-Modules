@@ -92,19 +92,12 @@ module appServicePlan '../../bicep/modules/apps/serverless/appserviceplan.bicep'
   }
 }
 
-resource appInsightsExisting 'Microsoft.Insights/components@2020-02-02' existing = {
-  name: appInsightsName
-}
-
-var connectionString = appInsightsExisting.properties.ConnectionString
-var instrumentationKey = appInsightsExisting.properties.InstrumentationKey
-
 module functionApp '../../bicep/modules/apps/serverless/functionapp.bicep' = {
   name: 'functionapp-${deploymentSuffix}'
   params: {
     storageAccountName: functionStorageAccountName
-    appInsightsConnectionString: connectionString
-    appInsightsInstrumentationKey: instrumentationKey
+    appInsightsConnectionString: appInsights.outputs.connectionString
+    appInsightsInstrumentationKey: appInsights.outputs.instrumentationKey
     functionAppName: functionAppName
     location: location
     enableSystemAssignedManagedIdentity: true

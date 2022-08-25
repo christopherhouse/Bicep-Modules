@@ -22,6 +22,7 @@ resource function 'Microsoft.Web/sites@2022-03-01' = {
   name: functionAppName
   location: location
   identity: enableSystemAssignedManagedIdentity ? identitySettings : any(null)
+  kind: 'functionapp'
   properties: {
     serverFarmId: appServicePlanId
     siteConfig: {

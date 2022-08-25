@@ -11,6 +11,7 @@ pr: none
 variables:
   vmImage: ubuntu-latest
   infraPath: $(Build.SourcesDirectory)/Module-Metadata-Function/.infrastructure
+  infraArtifactName: infrastructure
 
 jobs:
 - job: BuildInfrastructure
@@ -31,6 +32,19 @@ jobs:
     displayName: Publish infrastructure template
     inputs:
       targetPath: $(infraPath)
-      artifact: infrastructure
+      artifact: $(infraArtifactName)
       artifactType: pipeline
 
+- job: DeployInfrastructure
+  displayName: Deploy Infrastructure
+  pool:
+    vmImage: $(vmImage)
+  steps:
+  - task: AzureResourceGroupDeployment@2
+    inputs:
+      azureSubscription: AIRS
+      resourceGroupName: BICEP-REGISTRY
+      csmFile: $(Pipeline.Workspace)/$(infraArtifactName)/main.json
+      csmParametersFile: $(Pipeline.Workspace)/$(infraArtifactName)/parameters/main.dev.parameters.json
+      deploymentMode: Incremental
+    

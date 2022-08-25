@@ -40,6 +40,8 @@ jobs:
   pool:
     vmImage: $(vmImage)
   steps:
+  - download: current
+    artifact: $(infraArtifactName)
   - task: AzureResourceGroupDeployment@2
     inputs:
       azureSubscription: AIRS

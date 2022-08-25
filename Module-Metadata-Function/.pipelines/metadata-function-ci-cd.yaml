@@ -33,3 +33,4 @@ jobs:
       targetPath: $(infraPath)
       artifact: infrastructure
       artifactType: pipeline
+

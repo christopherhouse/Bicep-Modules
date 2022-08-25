@@ -44,6 +44,7 @@ jobs:
   - download: current
     artifact: $(infraArtifactName)
   - task: AzureResourceGroupDeployment@2
+    displayName: Deploy main.bicep
     inputs:
       azureSubscription: AIRS
       resourceGroupName: BICEP-REGISTRY

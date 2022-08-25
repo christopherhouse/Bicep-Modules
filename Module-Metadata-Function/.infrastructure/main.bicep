@@ -13,6 +13,8 @@ param functionStorageAccountName string
 param location string = resourceGroup().location
 param deploymentSuffix string = uniqueString(utcNow())
 
+var appServicePlanName = '${functionAppName}-asp'
+
 module cosmosAccount '../../bicep/modules/data/cosmos/cosmosaccount.bicep' = {
   name: 'cosmosaccount-${deploymentSuffix}'
   params: {
@@ -85,24 +87,26 @@ module webjobsSecrets '../../bicep/modules/storagecontainer.bicep' = {
 module appServicePlan '../../bicep/modules/apps/serverless/appserviceplan.bicep' = {
   name: 'appserviceplan-${deploymentSuffix}'
   params: {
-    appServicePlanName: functionAppName
+    appServicePlanName: appServicePlanName
     location: location
   }
-}
-
-resource appInsightsEx 'Microsoft.Insights/components@2020-02-02' existing = {
-  name: appInsights.outputs.name
 }
 
 module functionApp '../../bicep/modules/apps/serverless/functionapp.bicep' = {
   name: 'functionapp-${deploymentSuffix}'
   params: {
-    storageAccountName: functionStorage.outputs.name
-    appInsightsConnectionString: appInsightsEx.properties.ConnectionString
-    appInsightsInstrumentationKey: appInsightsEx.properties.InstrumentationKey
+    storageAccountName: functionStorageAccountName
+    appInsightsConnectionString: appInsights.outputs.connectionString
+    appInsightsInstrumentationKey: appInsights.outputs.instrumentationKey
     functionAppName: functionAppName
     location: location
     enableSystemAssignedManagedIdentity: true
-    appServicePlanName: appServicePlan.outputs.name
+    appServicePlanName: appServicePlanName
   }
+  dependsOn: [
+    appInsights
+    webjobsSecrets
+    webjobsStorage
+    appServicePlan
+  ]
 }

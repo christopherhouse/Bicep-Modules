@@ -1,5 +1,5 @@
 param functionAppName string
-param appServicePlanName string
+param appServicePlanId string
 param storageAccountName string
 param enableSystemAssignedManagedIdentity bool = false
 @secure()
@@ -10,10 +10,6 @@ param location string = resourceGroup().location
 
 var identitySettings = {
   type: 'SystemAssigned'
-}
-
-resource appServicePlan 'Microsoft.Web/sites@2022-03-01' existing = {
-  name: appServicePlanName
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
@@ -27,7 +23,7 @@ resource function 'Microsoft.Web/sites@2022-03-01' = {
   location: location
   identity: enableSystemAssignedManagedIdentity ? identitySettings : any(null)
   properties: {
-    serverFarmId: appServicePlan.id
+    serverFarmId: appServicePlanId
     siteConfig: {
       appSettings: [
         {

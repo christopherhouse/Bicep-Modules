@@ -128,13 +128,10 @@ module keyVault '../../bicep/modules/keyvault.bicep' = {
 module cosmosSecret '../../bicep/modules/keyvaultsecret.bicep' = {
   name: 'cosmossecret-${deploymentSuffix}'
   params: {
-    vaultName: keyVaultName
+    vaultName: keyVault.outputs.name
     secretName: 'COSMOS-CONNECTION-STRING'
     secretValue: listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', cosmosAccountName), '2020-04-01').connectionStrings[0].connectionString
   }
-  dependsOn: [
-    keyVault
-  ]
 }
 
 module storageSecret '../../bicep/modules/keyvaultsecret.bicep' = {

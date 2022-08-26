@@ -43,11 +43,11 @@
         "value": [
             {
                 "name": "COSMOS-CONNECTION-STRING",
-                "value": "@Microsoft.KeyVault(VaultName=cmh-bicep-metadata-kv;SecretName=COSMOS-CONNECTION-STRING;)"
+                "value": "@Microsoft.KeyVault(VaultName=cmh-bicep-metadata-kv;SecretName=COSMOS-CONNECTION-STRING)"
             },
             {
                 "name": "STORAGE-CONNECTION-STRING",
-                "value": "@Microsoft.KeyVault(VaultName=cmh-bicep-metadata-kv;SecretName=STORAGE-CONNECTION-STRING;)"
+                "value": "@Microsoft.KeyVault(VaultName=cmh-bicep-metadata-kv;SecretName=STORAGE-CONNECTION-STRING)"
             }            
         ]
       }

@@ -9,6 +9,7 @@ param appInsightsName string
 
 param functionAppName string
 param functionStorageAccountName string
+param functionAppSettings array
 
 param keyVaultName string
 param keyVaultAdminPrincipalids array
@@ -105,6 +106,7 @@ module functionApp '../../bicep/modules/apps/serverless/functionapp.bicep' = {
     location: location
     enableSystemAssignedManagedIdentity: true
     appServicePlanId: appServicePlan.outputs.id
+    additionalAppSettings: functionAppSettings
   }
   dependsOn: [
     appInsights
@@ -133,4 +135,13 @@ module cosmosSecret '../../bicep/modules/keyvaultsecret.bicep' = {
   dependsOn: [
     keyVault
   ]
+}
+
+module storageSecret '../../bicep/modules/keyvaultsecret.bicep' = {
+  name: 'storagesecret-${deploymentSuffix}'
+  params: {
+    vaultName: keyVault.outputs.name
+    secretName:  'STORAGE-CONNECTION-STRING'
+    secretValue: listConnectionStrings(resourceId('Microsoft.Storage/storageAccounts', functionStorageAccountName), '2021-01-01').connectionStrings[0].connectionString
+  }
 }

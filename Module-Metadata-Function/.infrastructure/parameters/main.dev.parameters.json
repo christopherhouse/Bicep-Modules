@@ -38,6 +38,18 @@
         "value": [
             "209019b5-167b-45cd-ab9c-f987fa262040"
         ]
+      },
+      "functionAppSettings": {
+        "value": [
+            {
+                "name": "COSMOS-CONNECTION-STRING",
+                "value": "@Microsoft.KeyVault(VaultName=cmh-bicep-metadata-kv;SecretName=COSMOS-CONNECTION-STRING;)"
+            },
+            {
+                "name": "STORAGE-CONNECTION-STRING",
+                "value": "@Microsoft.KeyVault(VaultName=cmh-bicep-metadata-kv;SecretName=STORAGE-CONNECTION-STRING;)"
+            }            
+        ]
       }
     }
   }

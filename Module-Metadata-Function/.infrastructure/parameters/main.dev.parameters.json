@@ -32,7 +32,7 @@
         "value": "cmh-bicep-metadata-api"
       },
       "keyVaultName": {
-        "value": "cmh-bicep-metadata-kv"
+        "value": "cmh-bicep-metadata-vault"
       },
       "keyVaultAdminPrincipalids": {
         "value": [

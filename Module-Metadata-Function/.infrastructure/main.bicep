@@ -142,6 +142,6 @@ module storageSecret '../../bicep/modules/keyvaultsecret.bicep' = {
   params: {
     vaultName: keyVault.outputs.name
     secretName:  'STORAGE-CONNECTION-STRING'
-    secretValue: listConnectionStrings(resourceId('Microsoft.Storage/storageAccounts', functionStorageAccountName), '2021-01-01').connectionStrings[0].connectionString
+    secretValue: 'DefaultEndpointsProtocol=https;AccountName=${functionStorageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(resourceId('Microsoft.Storage/storageAccounts', functionStorageAccountName), '2021-01-01').keys[0].value}'
   }
 }
